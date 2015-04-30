@@ -8,7 +8,12 @@ class SessionsController < ApplicationController
         log_in user
         params[:session][:remember_me] == '1' ? remember(user) : forget(user)
         flash[:success] = "Đăng nhập thành công"
-        redirect_back_or root_path
+        if user.admin?
+          redirect_back_or admin_root_path
+        else
+          redirect_back_or root_path
+        end
+        
     else
         flash.now[:danger] = "Email hoặc mật khẩu nhập vào không đúng"
         render 'new'
