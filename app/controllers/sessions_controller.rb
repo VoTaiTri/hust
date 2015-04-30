@@ -5,18 +5,17 @@ class SessionsController < ApplicationController
   def create
     user = User.find_by email: params[:session][:email].downcase
     if user && user.authenticate(params[:session][:password])
-        log_in user
-        params[:session][:remember_me] == '1' ? remember(user) : forget(user)
-        flash[:success] = "Đăng nhập thành công"
-        if user.admin?
-          redirect_back_or admin_root_path
-        else
-          redirect_back_or root_path
-        end
-        
+      log_in user
+      params[:session][:remember_me] == '1' ? remember(user) : forget(user)
+      flash[:success] = "Đăng nhập thành công"
+      if user.admin?
+        redirect_back_or admin_root_path
+      else
+        redirect_back_or root_path
+      end
     else
-        flash.now[:danger] = "Email hoặc mật khẩu nhập vào không đúng"
-        render 'new'
+      flash.now[:danger] = "Email hoặc mật khẩu nhập vào không đúng"
+      render 'new'
     end
   end
 
