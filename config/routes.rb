@@ -7,5 +7,8 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root 'pages#home'
+    resources :users
   end
+
+  resources :users, expect: [:new, :create, :destroy]
 end
