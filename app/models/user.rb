@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   attr_accessor :remember_token
+  attr_accessor :skip_password_validation
 
   before_save :downcase_email
 
@@ -9,7 +10,10 @@ class User < ActiveRecord::Base
                   format: {with: VALID_EMAIL_REGEX},
                   uniqueness: {case_sensitive: false}
   has_secure_password        
-  validates :password, length: {minimum: 6}
+  validates :password, presence: true, length: {minimum: 6}, unless: :skip_password_validation
+  validate  :avatar_size
+  
+  mount_uploader :avatar, AvatarUploader
 
   def User.digest string
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
@@ -38,5 +42,11 @@ class User < ActiveRecord::Base
   private
   def downcase_email
     self.email = email.downcase
+  end
+
+  def avatar_size
+    if avatar.size > 5.megabytes
+      errors.add(:avatar, "Ảnh đại diện phải dưới 5MB")
+    end
   end
 end

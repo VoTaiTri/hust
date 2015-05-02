@@ -9,6 +9,7 @@ class UsersController < ApplicationController
 
   def update
     @user = User.find params[:id]
+    @user.skip_password_validation = true
     if @user.update_attributes user_params
       flash[:success] = "Cập nhật thông tin cá nhân thành công"
       redirect_to user_path @user
@@ -19,6 +20,6 @@ class UsersController < ApplicationController
 
   private
   def user_params
-    params.require(:user).permit :name, :email, :password,:password_confirmation
+    params.require(:user).permit :name, :email, :avatar
   end
 end
